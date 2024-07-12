@@ -36,3 +36,8 @@ sudo docker stop $(sudo docker ps -q)
 ```
 sudo docker rmi $(sudo docker images -q)
 ```
+
+Очистка логов контейнера
+```commandline
+echo "" > $(docker inspect --format='{{.LogPath}}' <container_name_or_id>)
+```
