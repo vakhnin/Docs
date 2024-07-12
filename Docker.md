@@ -1,6 +1,4 @@
-# Docker
-
-[Главная](README.md)
+# [Docs](README.md) / Docker
 
 Собрать и запустить все контейнеры
 ```

@@ -1,6 +1,4 @@
-# React
-
-[Главная](README.md)
+# [Docs](README.md) / React
 
 Диспетчер версий
 ```commandline
