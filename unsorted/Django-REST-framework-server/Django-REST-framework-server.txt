@@ -1,0 +1,116 @@
+$ pip3 freeze > requirements.txt
+
+tutorial/settings.py
+>>>>>>>>>>
+ALLOWED_HOSTS = ['*']
+<<<<<<<<<<<<
+
+$ sudo apt update
+$ sudo apt upgrade -y
+$ sudo apt install python3-venv git-core -y
+
+$ sudo useradd -g www-data  -s /bin/bash -m django
+$ sudo --login -u django
+
+
+$ ssh-keygen
+$ cat /home/django/.ssh/id_rsa.pub
+
+Идем по URL и добавляем открытый ключ из предыдушего пункта
+https://github.com/vakhnin/start-Django-REST-framework/settings/keys
+
+
+
+$ cd /home/django/
+$ git clone git@github.com:vakhnin/start-Django-REST-framework.git
+
+$ cd start-Django-REST-framework/
+$ python3 -m venv env
+$ source env/bin/activate
+(env) pip install -U pip
+(env) pip3 install -r requirements.txt
+(env) pip3 install gunicorn
+(env) python3 manage.py migrate
+(env) python3 manage.py runserver
+(env) gunicorn --bind 127.0.0.1:80 tutorial.wsgi
+(env) python3 manage.py collectstatic
+(env) deactivate
+$ exit
+
+
+
+?????
+sudo chown -R www-data:www-data /var/www
+sudo usermod -aG www-data django
+sudo chmod go-rwx /var/www
+sudo chmod go+x /var/www
+sudo chgrp -R www-data /var/www
+sudo chmod -R go-rwx /var/www
+sudo chmod -R g+rwx /var/www
+????
+
+
+
+$ sudo nano /etc/systemd/system/gunicorn.socket
+>>>>>>>>>>>
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/run/gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+<<<<<<<<<<<
+
+
+
+$ sudo nano /etc/systemd/system/gunicorn.service
+>>>>>>>>>>>
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=django
+Group=www-data
+WorkingDirectory=/home/django/start-Django-REST-framework
+ExecStart=/home/django/start-Django-REST-framework/env/bin/gunicorn \
+          --access-logfile - \
+          --workers 5 \
+          --bind unix:/run/gunicorn.sock \
+          tutorial.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+<<<<<<<<<
+
+$ sudo systemctl enable gunicorn.socket
+$ sudo systemctl enable gunicorn.service
+$ sudo systemctl start gunicorn
+
+$ sudo apt install nginx -y
+
+$ sudo nano /etc/nginx/sites-available/default
+>>>>>>>>>>>>
+server {
+    listen 80;
+    server_name 127.0.0.1;
+
+    location /static/ {
+        root  /home/django/start-Django-REST-framework/;
+    }
+
+    location /media/ {
+        root  /home/django/start-Django-REST-framework/;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+}
+<<<<<<<<<<<<<
+
+$ sudo systemctl restart nginx
