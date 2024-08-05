@@ -1,0 +1,9 @@
+File -> File Propierties
+-> Associate with File Type
+
+File pattern:
+*.sqlite
+
+V Open matching files in  associated application
+
+Ok
